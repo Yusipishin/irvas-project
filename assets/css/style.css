@@ -13,6 +13,10 @@ body {
   color: #000000;
 }
 
+.show {
+  display: block;
+}
+
 .status {
   display: block;
   color: red;
