@@ -1,6 +1,89 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./js/modules/forms.js":
+/*!*****************************!*\
+  !*** ./js/modules/forms.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/services */ "./js/services/services.js");
+/* harmony import */ var _modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modal */ "./js/modules/modal.js");
+
+
+function forms() {
+  const forms = document.querySelectorAll('form');
+  const message = {
+    loading: 'Отправка данных...',
+    success: 'Спасибо. Мы скоро с Вами свяжемся',
+    failure: 'Что-то пошло не так...'
+  };
+  forms.forEach(form => {
+    bindPostData(form);
+  });
+  function bindPostData(form) {
+    form.addEventListener('submit', event => {
+      event.preventDefault(); // not working
+
+      const statusMessage = document.createElement('div');
+      statusMessage.textContent = message.loading;
+      statusMessage.style.cssText = `
+        margin: -25px 0 25px 0;
+        text-align: center;
+        `;
+      form.insertAdjacentElement('afterend', statusMessage);
+      const formData = new FormData(form);
+      const json = JSON.stringify(Object.fromEntries(formData.entries()));
+      // {"user_name":"erg","user_phone":"345"}
+
+      // postData('assets/server.php', json)
+      (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.postData)('http://localhost:3000/requests', json).then(data => {
+        console.log(data);
+        statusMessage.remove();
+        showThanksModal(message.success, form);
+      }).catch(() => {
+        statusMessage.remove();
+        showThanksModal(message.failure, form);
+      }).finally(() => {
+        form.reset();
+      });
+    });
+  }
+  function showThanksModal(message, form) {
+    const messageParent = form.parentNode,
+      messageBox = document.createElement('span');
+    messageBox.style.cssText = `
+      display: block;
+      background: #fff;
+      border-radius: 1rem;
+      font-size: 1.7rem;
+      font-weight: 700;
+      padding: 30px 10px;
+      text-align: center;
+    `;
+    messageBox.textContent = message;
+    form.classList.add('hide');
+    messageParent.insertAdjacentElement('afterbegin', messageBox);
+    setTimeout(() => {
+      if (messageBox) {
+        messageBox.remove();
+      }
+      form.classList.remove('hide');
+      (0,_modal__WEBPACK_IMPORTED_MODULE_1__.closeModal)('.popup_engineer');
+      (0,_modal__WEBPACK_IMPORTED_MODULE_1__.closeModal)('.popup');
+    }, 3000);
+  }
+  ;
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (forms);
+
+/***/ }),
+
 /***/ "./js/modules/modal.js":
 /*!*****************************!*\
   !*** ./js/modules/modal.js ***!
@@ -10,51 +93,59 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "closeModal": () => (/* binding */ closeModal),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   "showModal": () => (/* binding */ showModal)
 /* harmony export */ });
 // Error: при нажатии на кнопку вызова другого модального окна,
 // окно с '.header_btn' в любом случае появится через setTimeout()
 
+function closeModal(modalSelector) {
+  document.querySelector(modalSelector).classList.remove('show');
+  document.body.style.overflow = '';
+}
+;
+function showModal(modalSelector, modalTimerId) {
+  const modalBox = document.querySelector(modalSelector);
+  modalBox.classList.add('show');
+  document.body.style.overflow = 'hidden';
+  if (modalTimerId) {
+    clearInterval(modalTimerId);
+  }
+}
+;
 function modal(modalSelector, clickSelector, modalTimerId) {
   const modalBox = document.querySelector(modalSelector),
     clickElem = document.querySelectorAll(clickSelector),
     closeElem = document.querySelectorAll('.popup_close');
   let modalTimer;
   if (clickSelector === '.header_btn') {
-    modalTimer = setTimeout(showModal, modalTimerId);
+    modalTimer = setTimeout(() => showModal(modalSelector, modalTimer), modalTimerId);
   }
   clickElem.forEach(item => {
     item.addEventListener('click', event => {
       event.preventDefault();
-      showModal();
+      showModal(modalSelector, modalTimer);
     });
   });
-  function closeModal() {
-    modalBox.classList.remove('show');
-    document.body.style.overflow = '';
-  }
-  function showModal() {
-    modalBox.classList.add('show');
-    document.body.style.overflow = 'hidden';
-    clearInterval(modalTimer);
-  }
   closeElem.forEach(item => {
     item.addEventListener('click', () => {
-      closeModal();
+      closeModal(modalSelector);
     });
   });
   modalBox.addEventListener('click', event => {
     if (event.target.classList.contains(modalSelector.slice(1))) {
-      closeModal();
+      closeModal(modalSelector);
     }
   });
   document.addEventListener('keydown', event => {
     if (event.code === 'Escape' && modalBox.classList.contains('show')) {
-      closeModal();
+      closeModal(modalSelector);
     }
   });
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (modal);
+
 
 /***/ }),
 
@@ -148,6 +239,31 @@ function slider(_ref) {
   });
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (slider);
+
+/***/ }),
+
+/***/ "./js/services/services.js":
+/*!*********************************!*\
+  !*** ./js/services/services.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "postData": () => (/* binding */ postData)
+/* harmony export */ });
+const postData = async (url, data) => {
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: data
+  });
+  return await res.json();
+};
+
 
 /***/ }),
 
@@ -1439,13 +1555,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var polyfill_nodelist_foreach__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(polyfill_nodelist_foreach__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _modules_modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/modal */ "./js/modules/modal.js");
 /* harmony import */ var _modules_slider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/slider */ "./js/modules/slider.js");
+/* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/forms */ "./js/modules/forms.js");
 (__webpack_require__(/*! es6-promise */ "./node_modules/es6-promise/dist/es6-promise.js").polyfill)();
+
 
 
 
 window.addEventListener('DOMContentLoaded', () => {
   (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup_engineer', '.header_btn', 2000);
   (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup', '.phone_link');
+  (0,_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])();
   (0,_modules_slider__WEBPACK_IMPORTED_MODULE_2__["default"])({
     container: '.glazing_slider',
     decorContainer: '.decoration_slider',

@@ -1,6 +1,20 @@
 // Error: при нажатии на кнопку вызова другого модального окна,
 // окно с '.header_btn' в любом случае появится через setTimeout()
 
+function closeModal(modalSelector) {
+  document.querySelector(modalSelector).classList.remove('show')
+  document.body.style.overflow = '';
+};
+
+function showModal(modalSelector, modalTimerId) {
+  const modalBox = document.querySelector(modalSelector)
+  modalBox.classList.add('show')
+  document.body.style.overflow = 'hidden';
+  if (modalTimerId) {
+    clearInterval(modalTimerId)
+  }
+};
+
 function modal(modalSelector, clickSelector, modalTimerId) {
   const modalBox = document.querySelector(modalSelector),
         clickElem = document.querySelectorAll(clickSelector),
@@ -8,45 +22,35 @@ function modal(modalSelector, clickSelector, modalTimerId) {
 
   let modalTimer
   if (clickSelector === '.header_btn') {
-    modalTimer = setTimeout(showModal, modalTimerId);
+    modalTimer = setTimeout(() => showModal(modalSelector, modalTimer), modalTimerId);
   }
 
   clickElem.forEach(item => {
     item.addEventListener('click', event => {
       event.preventDefault();
-      showModal();
+      showModal(modalSelector, modalTimer);
     });
-  })
-
-  function closeModal() {
-    modalBox.classList.remove('show')
-    document.body.style.overflow = '';
-  }
-
-  function showModal() {
-    modalBox.classList.add('show')
-    document.body.style.overflow = 'hidden';
-    clearInterval(modalTimer)
-  }
+  });
 
   closeElem.forEach(item => {
     item.addEventListener('click', () => {
-      closeModal();
+      closeModal(modalSelector);
     });
   });
 
   modalBox.addEventListener('click', event => {
     if (event.target.classList.contains(modalSelector.slice(1))) {
-      closeModal();
+      closeModal(modalSelector);
     }
   });
 
   document.addEventListener('keydown', event => {
     if (event.code === 'Escape' && modalBox.classList.contains('show')) {
-      closeModal();
+      closeModal(modalSelector);
     }
   })
 
 }
 
 export default modal;
+export {closeModal, showModal};
