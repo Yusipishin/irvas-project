@@ -2,9 +2,6 @@ function tabs(tabsSelector, contentSelector, linkSelector, activeClass) { // act
   const contentTabs = document.querySelectorAll(contentSelector),
         tabs = document.querySelectorAll(tabsSelector),
         tabsLinks = document.querySelectorAll(linkSelector)
-  console.log(tabs)
-  console.log(contentTabs)
-  console.log(tabsLinks)
   tabsLinks[0].classList.add(activeClass)
   contentTabs[0].classList.add('show')
   tabs.forEach((tab, i) => {

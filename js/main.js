@@ -4,7 +4,8 @@ import 'polyfill-nodelist-foreach';
 import modal from './modules/modal';
 import slider from './modules/slider';
 import forms from './modules/forms';
-import tabs from './modules/tabs'
+import tabs from './modules/tabs';
+import timer from './modules/timer';
 
 window.addEventListener('DOMContentLoaded', () => {
   modal('.popup_engineer', '.header_btn');
@@ -18,4 +19,5 @@ window.addEventListener('DOMContentLoaded', () => {
     prevArrow: '<button class="prev arrow"></button>',
     nextArrow: '<button class="next arrow"></button>',
   });
+  timer('.container1', '2023-06-13');
 });

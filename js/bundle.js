@@ -269,9 +269,6 @@ function tabs(tabsSelector, contentSelector, linkSelector, activeClass) {
   const contentTabs = document.querySelectorAll(contentSelector),
     tabs = document.querySelectorAll(tabsSelector),
     tabsLinks = document.querySelectorAll(linkSelector);
-  console.log(tabs);
-  console.log(contentTabs);
-  console.log(tabsLinks);
   tabsLinks[0].classList.add(activeClass);
   contentTabs[0].classList.add('show');
   tabs.forEach((tab, i) => {
@@ -292,6 +289,66 @@ function tabs(tabsSelector, contentSelector, linkSelector, activeClass) {
   });
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tabs);
+
+/***/ }),
+
+/***/ "./js/modules/timer.js":
+/*!*****************************!*\
+  !*** ./js/modules/timer.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function timer(parentSelector, deadline) {
+  const timerBlock = document.querySelector(parentSelector),
+    daysBlock = timerBlock.querySelector('#days'),
+    hoursBlock = timerBlock.querySelector('#hours'),
+    minutesBlock = timerBlock.querySelector('#minutes'),
+    secondsBlock = timerBlock.querySelector('#seconds');
+  let time = Date.parse(deadline) - Date.parse(new Date()),
+    days,
+    hours,
+    minutes,
+    seconds;
+  if (time <= 0 || !time) {
+    setNullTime();
+  } else {
+    const timeInterval = setInterval(updateClock, 1000);
+  }
+  function setNullTime() {
+    daysBlock.textContent = getZero(0);
+    hoursBlock.textContent = getZero(0);
+    minutesBlock.textContent = getZero(0);
+    secondsBlock.textContent = getZero(0);
+  }
+  function getZero(num) {
+    if (num >= 0 && num < 10) {
+      return `0${num}`;
+    } else {
+      return num;
+    }
+  }
+  function updateClock() {
+    time = Date.parse(deadline) - Date.parse(new Date());
+    days = Math.floor(time / (1000 * 60 * 60 * 24));
+    hours = Math.floor(time / (1000 * 60 * 60) % 24);
+    minutes = Math.floor(time / (1000 * 60) % 60);
+    seconds = Math.floor(time / 1000 % 60);
+    daysBlock.textContent = getZero(days);
+    hoursBlock.textContent = getZero(hours);
+    minutesBlock.textContent = getZero(minutes);
+    secondsBlock.textContent = getZero(seconds);
+    if (time <= 0) {
+      clearInterval(timeInterval);
+    }
+  }
+}
+;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (timer);
 
 /***/ }),
 
@@ -1610,7 +1667,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_slider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/slider */ "./js/modules/slider.js");
 /* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/forms */ "./js/modules/forms.js");
 /* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/tabs */ "./js/modules/tabs.js");
+/* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/timer */ "./js/modules/timer.js");
 (__webpack_require__(/*! es6-promise */ "./node_modules/es6-promise/dist/es6-promise.js").polyfill)();
+
 
 
 
@@ -1628,6 +1687,7 @@ window.addEventListener('DOMContentLoaded', () => {
     prevArrow: '<button class="prev arrow"></button>',
     nextArrow: '<button class="next arrow"></button>'
   });
+  (0,_modules_timer__WEBPACK_IMPORTED_MODULE_5__["default"])('.container1', '2023-06-13');
 });
 })();
 
