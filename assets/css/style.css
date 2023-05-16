@@ -390,7 +390,7 @@ textarea:focus {
 			}*/
 }
 
-.glazing_block a:hover {
+.glazing_block {
   cursor: pointer;
 }
 
@@ -484,6 +484,7 @@ textarea:focus {
 }
 
 .glazing .aluminum,
+.glazing .tree,
 .glazing .plastic,
 .glazing .french,
 .glazing .rise {
@@ -579,6 +580,7 @@ textarea:focus {
 }
 
 .decoration .external,
+.decoration .internal,
 .decoration .rising,
 .decoration .roof {
   display: none;

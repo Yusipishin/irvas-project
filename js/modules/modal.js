@@ -1,6 +1,8 @@
 // Error: при нажатии на кнопку вызова другого модального окна,
 // окно с '.header_btn' в любом случае появится через setTimeout()
 
+// доработать валидацию номера телефона
+
 function closeModal(modalSelector) {
   document.querySelector(modalSelector).classList.remove('show')
   document.body.style.overflow = '';

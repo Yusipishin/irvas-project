@@ -100,6 +100,8 @@ __webpack_require__.r(__webpack_exports__);
 // Error: при нажатии на кнопку вызова другого модального окна,
 // окно с '.header_btn' в любом случае появится через setTimeout()
 
+// доработать валидацию номера телефона
+
 function closeModal(modalSelector) {
   document.querySelector(modalSelector).classList.remove('show');
   document.body.style.overflow = '';
@@ -239,6 +241,48 @@ function slider(_ref) {
   });
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (slider);
+
+/***/ }),
+
+/***/ "./js/modules/tabs.js":
+/*!****************************!*\
+  !*** ./js/modules/tabs.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function tabs(tabsSelector, contentSelector, linkSelector, activeClass) {
+  // active -- стиль активного таба
+  const contentTabs = document.querySelectorAll(contentSelector),
+    tabs = document.querySelectorAll(tabsSelector),
+    tabsLinks = document.querySelectorAll(linkSelector);
+  console.log(tabs);
+  console.log(contentTabs);
+  console.log(tabsLinks);
+  tabsLinks[0].classList.add(activeClass);
+  contentTabs[0].classList.add('show');
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => {
+      tabsLinks.forEach(link => {
+        if (link.classList.contains(activeClass)) {
+          link.classList.remove(activeClass);
+        }
+      });
+      contentTabs.forEach(box => {
+        if (box.classList.contains('show')) {
+          box.classList.remove('show');
+        }
+      });
+      tabsLinks[i].classList.add(activeClass);
+      contentTabs[i].classList.add('show');
+    });
+  });
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tabs);
 
 /***/ }),
 
@@ -1556,15 +1600,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/modal */ "./js/modules/modal.js");
 /* harmony import */ var _modules_slider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/slider */ "./js/modules/slider.js");
 /* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/forms */ "./js/modules/forms.js");
+/* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/tabs */ "./js/modules/tabs.js");
 (__webpack_require__(/*! es6-promise */ "./node_modules/es6-promise/dist/es6-promise.js").polyfill)();
 
 
 
 
+
 window.addEventListener('DOMContentLoaded', () => {
-  (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup_engineer', '.header_btn', 2000);
+  (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup_engineer', '.header_btn', 10000);
   (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup', '.phone_link');
   (0,_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])();
+  (0,_modules_tabs__WEBPACK_IMPORTED_MODULE_4__["default"])('.glazing_block', '.glazing_content', '.glazing_block a', 'active');
+  (0,_modules_tabs__WEBPACK_IMPORTED_MODULE_4__["default"])('.decoration_item', '[data-content="service"]', '.decoration_item div', 'after_click');
   (0,_modules_slider__WEBPACK_IMPORTED_MODULE_2__["default"])({
     container: '.glazing_slider',
     decorContainer: '.decoration_slider',
