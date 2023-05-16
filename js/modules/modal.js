@@ -23,7 +23,7 @@ function modal(modalSelector, clickSelector, modalTimerId) {
         closeElem = document.querySelectorAll('.popup_close');
 
   let modalTimer
-  if (clickSelector === '.header_btn') {
+  if (clickSelector === '.phone_link') { //костыль
     modalTimer = setTimeout(() => showModal(modalSelector, modalTimer), modalTimerId);
   }
 

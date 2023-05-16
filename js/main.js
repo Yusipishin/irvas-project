@@ -7,8 +7,8 @@ import forms from './modules/forms';
 import tabs from './modules/tabs'
 
 window.addEventListener('DOMContentLoaded', () => {
-  modal('.popup_engineer', '.header_btn', 10000);
-  modal('.popup', '.phone_link');
+  modal('.popup_engineer', '.header_btn');
+  modal('.popup', '.phone_link', 60000);
   forms();
   tabs('.glazing_block', '.glazing_content', '.glazing_block a' , 'active');
   tabs('.decoration_item', '[data-content="service"]', '.decoration_item div', 'after_click')

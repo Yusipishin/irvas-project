@@ -30,28 +30,36 @@ function forms() {
     form.addEventListener('submit', event => {
       event.preventDefault(); // not working
 
-      const statusMessage = document.createElement('div');
-      statusMessage.textContent = message.loading;
-      statusMessage.style.cssText = `
-        margin: -25px 0 25px 0;
-        text-align: center;
-        `;
-      form.insertAdjacentElement('afterend', statusMessage);
-      const formData = new FormData(form);
-      const json = JSON.stringify(Object.fromEntries(formData.entries()));
+      const formData = new FormData(form),
+        json = JSON.stringify(Object.fromEntries(formData.entries())),
+        phoneInput = form.querySelector('[name="user_phone"]'),
+        regularEx = /^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/;
       // {"user_name":"erg","user_phone":"345"}
 
       // postData('assets/server.php', json)
-      (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.postData)('http://localhost:3000/requests', json).then(data => {
-        console.log(data);
-        statusMessage.remove();
-        showThanksModal(message.success, form);
-      }).catch(() => {
-        statusMessage.remove();
-        showThanksModal(message.failure, form);
-      }).finally(() => {
-        form.reset();
-      });
+
+      if (regularEx.test(formData.get('user_phone'))) {
+        phoneInput.style.border = '1px solid #ccc';
+        const statusMessage = document.createElement('div');
+        statusMessage.textContent = message.loading;
+        statusMessage.style.cssText = `
+          margin: -25px 0 25px 0;
+          text-align: center;
+          `;
+        form.insertAdjacentElement('afterend', statusMessage);
+        (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.postData)('http://localhost:3000/requests', json).then(data => {
+          console.log(data);
+          statusMessage.remove();
+          showThanksModal(message.success, form);
+        }).catch(() => {
+          statusMessage.remove();
+          showThanksModal(message.failure, form);
+        }).finally(() => {
+          form.reset();
+        });
+      } else {
+        phoneInput.style.border = '1px solid red';
+      }
     });
   }
   function showThanksModal(message, form) {
@@ -121,7 +129,8 @@ function modal(modalSelector, clickSelector, modalTimerId) {
     clickElem = document.querySelectorAll(clickSelector),
     closeElem = document.querySelectorAll('.popup_close');
   let modalTimer;
-  if (clickSelector === '.header_btn') {
+  if (clickSelector === '.phone_link') {
+    //костыль
     modalTimer = setTimeout(() => showModal(modalSelector, modalTimer), modalTimerId);
   }
   clickElem.forEach(item => {
@@ -1608,8 +1617,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 window.addEventListener('DOMContentLoaded', () => {
-  (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup_engineer', '.header_btn', 10000);
-  (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup', '.phone_link');
+  (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup_engineer', '.header_btn');
+  (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup', '.phone_link', 60000);
   (0,_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])();
   (0,_modules_tabs__WEBPACK_IMPORTED_MODULE_4__["default"])('.glazing_block', '.glazing_content', '.glazing_block a', 'active');
   (0,_modules_tabs__WEBPACK_IMPORTED_MODULE_4__["default"])('.decoration_item', '[data-content="service"]', '.decoration_item div', 'after_click');
