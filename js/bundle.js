@@ -160,6 +160,51 @@ function modal(modalSelector, clickSelector, modalTimerId) {
 
 /***/ }),
 
+/***/ "./js/modules/photos.js":
+/*!******************************!*\
+  !*** ./js/modules/photos.js ***!
+  \******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function photos(photoBox) {
+  const photoBlock = document.querySelector(photoBox),
+    backgroundImage = document.createElement('div'),
+    bigImage = document.createElement('img');
+  backgroundImage.classList.add('popup', 'show');
+  bigImage.style.cssText = `
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.5);
+  `;
+  photoBlock.addEventListener('click', event => {
+    event.preventDefault();
+    const photo = event.target;
+    console.log(photo);
+    console.log(photo.getAttribute('data-photo'));
+    if (photo.tagName === 'IMG') {
+      bigImage.setAttribute('src', `${photo.getAttribute('src')}`);
+      backgroundImage.insertAdjacentElement('afterbegin', bigImage);
+      photoBlock.insertAdjacentElement('afterbegin', backgroundImage);
+      document.body.style.overflow = 'hidden';
+      backgroundImage.addEventListener('click', event => {
+        if (event.target.tagName !== 'IMG') {
+          document.body.style.overflow = '';
+          backgroundImage.remove();
+        }
+      });
+    }
+  });
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (photos);
+
+/***/ }),
+
 /***/ "./js/modules/slider.js":
 /*!******************************!*\
   !*** ./js/modules/slider.js ***!
@@ -1668,7 +1713,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/forms */ "./js/modules/forms.js");
 /* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/tabs */ "./js/modules/tabs.js");
 /* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/timer */ "./js/modules/timer.js");
+/* harmony import */ var _modules_photos__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/photos */ "./js/modules/photos.js");
 (__webpack_require__(/*! es6-promise */ "./node_modules/es6-promise/dist/es6-promise.js").polyfill)();
+
 
 
 
@@ -1688,6 +1735,7 @@ window.addEventListener('DOMContentLoaded', () => {
     nextArrow: '<button class="next arrow"></button>'
   });
   (0,_modules_timer__WEBPACK_IMPORTED_MODULE_5__["default"])('.container1', '2023-06-13');
+  (0,_modules_photos__WEBPACK_IMPORTED_MODULE_6__["default"])('.works .row');
 });
 })();
 

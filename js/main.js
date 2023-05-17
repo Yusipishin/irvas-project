@@ -6,6 +6,7 @@ import slider from './modules/slider';
 import forms from './modules/forms';
 import tabs from './modules/tabs';
 import timer from './modules/timer';
+import photos from './modules/photos';
 
 window.addEventListener('DOMContentLoaded', () => {
   modal('.popup_engineer', '.header_btn');
@@ -20,4 +21,5 @@ window.addEventListener('DOMContentLoaded', () => {
     nextArrow: '<button class="next arrow"></button>',
   });
   timer('.container1', '2023-06-13');
+  photos('.works .row');
 });
