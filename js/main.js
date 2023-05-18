@@ -7,6 +7,7 @@ import forms from './modules/forms';
 import tabs from './modules/tabs';
 import timer from './modules/timer';
 import photos from './modules/photos';
+import calc from './modules/calc';
 
 window.addEventListener('DOMContentLoaded', () => {
   modal('.popup_engineer', '.header_btn');
@@ -22,4 +23,6 @@ window.addEventListener('DOMContentLoaded', () => {
   });
   timer('.container1', '2023-06-13');
   photos('.works .row');
+  modal('.popup_calc', '.popup_calc_btn');
+  calc();
 });

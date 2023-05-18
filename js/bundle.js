@@ -1,6 +1,69 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./js/modules/calc.js":
+/*!****************************!*\
+  !*** ./js/modules/calc.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _forms__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./forms */ "./js/modules/forms.js");
+
+function calc() {
+  const prevPictures = document.querySelectorAll('.balcon_icons_img'),
+    bigPicture = document.createElement('img'),
+    parentBlock = document.querySelectorAll('.big_img img'),
+    formsControl = document.querySelectorAll('.form-control'),
+    reg = /\d/g;
+  // do_image_more
+  prevPictures.forEach((picture, i) => {
+    picture.addEventListener('click', () => {
+      prevPictures.forEach(img => {
+        if (img.classList.contains('do_image_more')) {
+          img.classList.remove('do_image_more');
+        }
+      });
+      picture.classList.add('do_image_more');
+      bigPicture.setAttribute('src', `${picture.firstElementChild.getAttribute('src')}`);
+      parentBlock.forEach(item => {
+        if (item.style.display === 'block') {
+          item.style.display = 'none';
+        }
+      });
+      parentBlock[i].style.cssText = `
+          display: block;
+          margin: 0 auto;
+        `;
+    });
+  });
+
+  // const calcBtn = document.querySelector('.popup_calc_button')
+  // calcBtn.addEventListener('click', () => {
+  //   if (!reg.test(formsControl[0].value) || !reg.test(formsControl[1].value)) {
+  //     if (!reg.test(formsControl[0].value) && !reg.test(formsControl[1].value)) {
+  //       formsControl[0].style.border = '1px solid red';
+  //       formsControl[1].style.border = '1px solid red';
+  //     } else if (!reg.test(formsControl[0].value)) {
+  //       formsControl[0].style.border = '1px solid red';
+  //     } else {
+  //       formsControl[1].style.border = '1px solid red';
+  //     }
+  //   } else {
+  //     formsControl[0].style.border = '';
+  //     formsControl[1].style.border = '';
+  //   }
+  // })
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (calc);
+
+/***/ }),
+
 /***/ "./js/modules/forms.js":
 /*!*****************************!*\
   !*** ./js/modules/forms.js ***!
@@ -127,10 +190,9 @@ function showModal(modalSelector, modalTimerId) {
 function modal(modalSelector, clickSelector, modalTimerId) {
   const modalBox = document.querySelector(modalSelector),
     clickElem = document.querySelectorAll(clickSelector),
-    closeElem = document.querySelectorAll('.popup_close');
+    closeElem = document.querySelectorAll('.popup_close, .popup_calc_close');
   let modalTimer;
   if (clickSelector === '.phone_link') {
-    //костыль
     modalTimer = setTimeout(() => showModal(modalSelector, modalTimer), modalTimerId);
   }
   clickElem.forEach(item => {
@@ -1714,7 +1776,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/tabs */ "./js/modules/tabs.js");
 /* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/timer */ "./js/modules/timer.js");
 /* harmony import */ var _modules_photos__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/photos */ "./js/modules/photos.js");
+/* harmony import */ var _modules_calc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/calc */ "./js/modules/calc.js");
 (__webpack_require__(/*! es6-promise */ "./node_modules/es6-promise/dist/es6-promise.js").polyfill)();
+
 
 
 
@@ -1736,6 +1800,8 @@ window.addEventListener('DOMContentLoaded', () => {
   });
   (0,_modules_timer__WEBPACK_IMPORTED_MODULE_5__["default"])('.container1', '2023-06-13');
   (0,_modules_photos__WEBPACK_IMPORTED_MODULE_6__["default"])('.works .row');
+  (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup_calc', '.popup_calc_btn');
+  (0,_modules_calc__WEBPACK_IMPORTED_MODULE_7__["default"])();
 });
 })();
 
