@@ -12,7 +12,7 @@ import calc from './modules/calc';
 window.addEventListener('DOMContentLoaded', () => {
   modal('.popup_engineer', '.header_btn');
   modal('.popup', '.phone_link', 60000);
-  forms();
+  forms('http://localhost:3000/requests');
   tabs('.glazing_block', '.glazing_content', '.glazing_block a' , 'active');
   tabs('.decoration_item', '[data-content="service"]', '.decoration_item div', 'after_click')
   slider({

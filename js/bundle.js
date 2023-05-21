@@ -12,17 +12,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _forms__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./forms */ "./js/modules/forms.js");
+/* harmony import */ var _modal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modal */ "./js/modules/modal.js");
+
 
 function calc() {
   const prevPictures = document.querySelectorAll('.balcon_icons_img'),
     bigPicture = document.createElement('img'),
-    parentBlock = document.querySelectorAll('.big_img img'),
-    formsControl = document.querySelectorAll('.form-control'),
-    reg = /\d/g;
-  // do_image_more
+    parentBlock = document.querySelectorAll('.big_img img');
+  let checkImg = false,
+    balcony;
   prevPictures.forEach((picture, i) => {
     picture.addEventListener('click', () => {
+      balcony = picture.firstElementChild.getAttribute('alt');
       prevPictures.forEach(img => {
         if (img.classList.contains('do_image_more')) {
           img.classList.remove('do_image_more');
@@ -32,34 +33,62 @@ function calc() {
       bigPicture.setAttribute('src', `${picture.firstElementChild.getAttribute('src')}`);
       parentBlock.forEach(item => {
         if (item.style.display === 'block') {
-          item.style.display = 'none';
+          item.style.display = '';
         }
       });
       parentBlock[i].style.cssText = `
-          display: block;
-          margin: 0 auto;
-        `;
+        display: block;
+        margin: 0 auto;
+      `;
+      checkImg = true;
     });
   });
-
-  // const calcBtn = document.querySelector('.popup_calc_button')
-  // calcBtn.addEventListener('click', () => {
-  //   if (!reg.test(formsControl[0].value) || !reg.test(formsControl[1].value)) {
-  //     if (!reg.test(formsControl[0].value) && !reg.test(formsControl[1].value)) {
-  //       formsControl[0].style.border = '1px solid red';
-  //       formsControl[1].style.border = '1px solid red';
-  //     } else if (!reg.test(formsControl[0].value)) {
-  //       formsControl[0].style.border = '1px solid red';
-  //     } else {
-  //       formsControl[1].style.border = '1px solid red';
-  //     }
-  //   } else {
-  //     formsControl[0].style.border = '';
-  //     formsControl[1].style.border = '';
-  //   }
-  // })
+  const calcBtn = document.querySelector('.popup_calc_button'),
+    profileBtn = document.querySelector('.popup_calc_profile_button'),
+    widthInput = document.querySelector('#width'),
+    heightInput = document.querySelector('#height'),
+    checkGlazing = document.querySelectorAll('#cold, #warm'),
+    typeGlazing = document.querySelector('#view_type');
+  let width, height;
+  function showNewModal(prevModalSelector, newModalSelector, clickModalSelector) {
+    (0,_modal__WEBPACK_IMPORTED_MODULE_0__.closeModal)(prevModalSelector);
+    (0,_modal__WEBPACK_IMPORTED_MODULE_0__.showModal)(newModalSelector);
+    (0,_modal__WEBPACK_IMPORTED_MODULE_0__["default"])(newModalSelector, clickModalSelector);
+  }
+  calcBtn.addEventListener('click', () => {
+    width = widthInput.value;
+    height = heightInput.value;
+    if (width && height && checkImg) {
+      showNewModal('.popup_calc', '.popup_calc_profile', '.popup_calc_button');
+    } else {
+      console.log(false);
+    }
+  });
+  let textType,
+    countChecked = 0;
+  profileBtn.addEventListener('click', () => {
+    textType = typeGlazing.options[typeGlazing.selectedIndex].text;
+    checkGlazing.forEach(checkbox => {
+      let styleBefore = window.getComputedStyle(document.querySelector(`#${checkbox.getAttribute('id')}`), ':before').getPropertyValue('display');
+      if (styleBefore === 'block') {
+        countChecked += 1;
+      }
+    });
+    if (countChecked === 1) {
+      // console.log('Вы выбрали одно значение')
+      showNewModal('.popup_calc_profile', '.popup_calc_end', '.popup_calc_profile_button');
+    } else {
+      // console.log('ВЫБЕРИ ОДНО ЗНАЧЕНИЕ')
+    }
+    countChecked = 0;
+    const data = {
+      typeBalcony: balcony,
+      width: width,
+      height: height,
+      typeGlazing: textType
+    };
+  });
 }
-
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (calc);
 
 /***/ }),
@@ -79,28 +108,42 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modal */ "./js/modules/modal.js");
 
 
-function forms() {
-  const forms = document.querySelectorAll('form');
+function forms(url, newData, formSelector) {
+  let forms;
+  if (formSelector) {
+    forms = document.querySelector(formSelector);
+    bindPostData(forms);
+  } else {
+    forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+      bindPostData(form);
+    });
+  }
   const message = {
     loading: 'Отправка данных...',
     success: 'Спасибо. Мы скоро с Вами свяжемся',
     failure: 'Что-то пошло не так...'
   };
-  forms.forEach(form => {
-    bindPostData(form);
-  });
   function bindPostData(form) {
     form.addEventListener('submit', event => {
-      event.preventDefault(); // not working
-
+      event.preventDefault();
+      function jsonData() {
+        if (newData) {
+          const obj = {
+            ...newData,
+            ...Object.fromEntries(formData.entries())
+          };
+          return obj;
+        } else {
+          return Object.fromEntries(formData.entries());
+        }
+      }
       const formData = new FormData(form),
-        json = JSON.stringify(Object.fromEntries(formData.entries())),
         phoneInput = form.querySelector('[name="user_phone"]'),
+        json = JSON.stringify(jsonData()),
         regularEx = /^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/;
-      // {"user_name":"erg","user_phone":"345"}
-
-      // postData('assets/server.php', json)
-
+      console.log(jsonData());
+      console.log(json);
       if (regularEx.test(formData.get('user_phone'))) {
         phoneInput.style.border = '1px solid #ccc';
         const statusMessage = document.createElement('div');
@@ -110,8 +153,8 @@ function forms() {
           text-align: center;
           `;
         form.insertAdjacentElement('afterend', statusMessage);
-        (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.postData)('http://localhost:3000/requests', json).then(data => {
-          console.log(data);
+        (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.postData)(url, json).then(data => {
+          console.log(`Спасибо за отправку: ${data}`);
           statusMessage.remove();
           showThanksModal(message.success, form);
         }).catch(() => {
@@ -190,7 +233,7 @@ function showModal(modalSelector, modalTimerId) {
 function modal(modalSelector, clickSelector, modalTimerId) {
   const modalBox = document.querySelector(modalSelector),
     clickElem = document.querySelectorAll(clickSelector),
-    closeElem = document.querySelectorAll('.popup_close, .popup_calc_close');
+    closeElem = document.querySelectorAll('strong');
   let modalTimer;
   if (clickSelector === '.phone_link') {
     modalTimer = setTimeout(() => showModal(modalSelector, modalTimer), modalTimerId);
@@ -1789,7 +1832,7 @@ __webpack_require__.r(__webpack_exports__);
 window.addEventListener('DOMContentLoaded', () => {
   (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup_engineer', '.header_btn');
   (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup', '.phone_link', 60000);
-  (0,_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])();
+  (0,_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])('http://localhost:3000/requests');
   (0,_modules_tabs__WEBPACK_IMPORTED_MODULE_4__["default"])('.glazing_block', '.glazing_content', '.glazing_block a', 'active');
   (0,_modules_tabs__WEBPACK_IMPORTED_MODULE_4__["default"])('.decoration_item', '[data-content="service"]', '.decoration_item div', 'after_click');
   (0,_modules_slider__WEBPACK_IMPORTED_MODULE_2__["default"])({

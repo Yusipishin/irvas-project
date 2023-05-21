@@ -20,7 +20,7 @@ function showModal(modalSelector, modalTimerId) {
 function modal(modalSelector, clickSelector, modalTimerId) {
   const modalBox = document.querySelector(modalSelector),
         clickElem = document.querySelectorAll(clickSelector),
-        closeElem = document.querySelectorAll('.popup_close, .popup_calc_close');
+        closeElem = document.querySelectorAll('strong');
 
   let modalTimer
   if (clickSelector === '.phone_link') {

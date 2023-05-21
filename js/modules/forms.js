@@ -1,8 +1,17 @@
 import {postData} from '../services/services'
 import {closeModal} from './modal';
 
-function forms() {
-  const forms = document.querySelectorAll('form');
+function forms(url, newData, formSelector) {
+  let forms;
+  if (formSelector) {
+    forms = document.querySelector(formSelector);
+    bindPostData(forms)
+  } else {
+    forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+      bindPostData(form);
+    });
+  }
 
   const message = {
     loading: 'Отправка данных...',
@@ -10,21 +19,29 @@ function forms() {
     failure: 'Что-то пошло не так...'
   };
 
-  forms.forEach(form => {
-    bindPostData(form);
-  });
-
   function bindPostData(form) {
     form.addEventListener('submit', event => {
-      event.preventDefault(); // not working
+      event.preventDefault();
 
+      function jsonData() {
+        if (newData) {
+          const obj = {
+            ...newData,
+            ...Object.fromEntries(formData.entries())
+          }
+          return obj
+        } else {
+          return Object.fromEntries(formData.entries())
+        }
+      }
+      
       const formData = new FormData(form),
-            json = JSON.stringify(Object.fromEntries(formData.entries())),
             phoneInput = form.querySelector('[name="user_phone"]'),
+            json = JSON.stringify(jsonData()),
             regularEx = /^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/;
-      // {"user_name":"erg","user_phone":"345"}
 
-      // postData('assets/server.php', json)
+      console.log(jsonData())
+      console.log(json)
 
       if (regularEx.test(formData.get('user_phone'))) {
         phoneInput.style.border = '1px solid #ccc'
@@ -36,9 +53,9 @@ function forms() {
           `
         form.insertAdjacentElement('afterend', statusMessage);
 
-        postData('http://localhost:3000/requests', json)
+        postData(url, json)
         .then(data => {
-          console.log(data);
+          console.log(`Спасибо за отправку: ${data}`)
           statusMessage.remove();
           showThanksModal(message.success, form);
         }).catch(() => {
@@ -50,7 +67,6 @@ function forms() {
       } else {
         phoneInput.style.border = '1px solid red'
       }
-      
     })
   }
 
